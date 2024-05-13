@@ -1,0 +1,41 @@
+# Ignore Visual Studio Code files
+.vscode/
+
+# Ignore SQLite database file
+*.sqlite
+*.db
+
+# Ignore build and object directories
+**/bin/
+**/obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.cache
+
+# Ignore .NET Core build artifacts
+*.dll
+*.exe
+*.pdb
+*.log
+
+# Ignore Visual Studio and Rider files
+*.sln
+*.suo
+*.ipch
+*.vs
+.idea/
+
+# Ignore NuGet package directory
+packages/
+
+# Ignore Node.js dependencies
+node_modules/
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore editor backup files
+*~
+
