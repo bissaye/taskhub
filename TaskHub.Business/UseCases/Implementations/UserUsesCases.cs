@@ -3,17 +3,18 @@ using System.Security.Claims;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.Errors;
-using TaskHub.Business.Services;
+using TaskHub.Business.Services.Interfaces;
+using TaskHub.Business.UseCases.Interfaces;
 using TaskHub.Data.Models.Errors;
 
-namespace TaskHub.Business.UseCases
+namespace TaskHub.Business.UseCases.Implementations
 {
-    public class UserUsesCases
+    public class UserUsesCases : IUserUsesCases
     {
-        private readonly UserServices _userService;
-        private readonly TokenServices _tokenService;
+        private readonly IUserServices _userService;
+        private readonly ITokenServices _tokenService;
         private readonly ILogger _logger;
-        public UserUsesCases(UserServices userServices , TokenServices tokenServices, ILogger logger)
+        public UserUsesCases(IUserServices userServices, ITokenServices tokenServices, ILogger logger)
         {
             _userService = userServices;
             _tokenService = tokenServices;
@@ -25,7 +26,7 @@ namespace TaskHub.Business.UseCases
             try
             {
                 _logger.LogInformation($"attempt to register new user {userDataReq.Email}");
-                if(await _userService.checkUserMail(userDataReq.Email))
+                if (await _userService.checkUserMail(userDataReq.Email))
                 {
                     _logger.LogWarning($"Email {userDataReq.Email} already exists");
                     GenericResponse response = CustomHttpErrorNumber.conflict;
@@ -51,7 +52,7 @@ namespace TaskHub.Business.UseCases
                     );
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError($"Error occurred during user registration: {ex.Message}");
                 GenericResponse response = CustomHttpErrorNumber.serverError;
@@ -74,7 +75,7 @@ namespace TaskHub.Business.UseCases
 
                 GenericResponse response = CustomHttpErrorNumber.success;
                 response.detail = await _userService.getUserDataResById(userId);
-                
+
                 return new CustumHttpResponse(
                     content: response,
                     statusCode: 200

@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
-using TaskHub.Business.Services;
-using TaskHub.Business.UseCases;
-using TaskHub.Data;
+using TaskHub.Business.UseCases.Interfaces;
 
 namespace TaskHub.Controllers.api.v1
 {
@@ -14,13 +12,11 @@ namespace TaskHub.Controllers.api.v1
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly AuthUseCases _authUseCases;
-        private readonly ILogger<AuthController> _logger;
+        private readonly IAuthUseCases _authUseCases;
 
-        public AuthController(UserServices userServices, TokenServices tokenServices, ILogger<AuthController> logger)
+        public AuthController(IAuthUseCases authUseCases)
         {
-            _logger = logger;
-            _authUseCases = new AuthUseCases(userServices, tokenServices, _logger);
+            _authUseCases = authUseCases;
 
         }
 

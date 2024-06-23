@@ -4,25 +4,25 @@ using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
 using TaskHub.Business.Models.Errors;
-using TaskHub.Business.Services;
+using TaskHub.Business.Services.Interfaces;
+using TaskHub.Business.UseCases.Interfaces;
 using TaskHub.Data.Models.Custum;
-using TaskHub.Data.Models.DAO;
 using TaskHub.Data.Models.Errors;
 using TaskStatus = TaskHub.Data.Models.DAO.TaskStatus;
 
-namespace TaskHub.Business.UseCases
+namespace TaskHub.Business.UseCases.Implementations
 {
-    public class TaskItemUseCases
+    public class TaskItemUseCases : ITaskItemUseCases
     {
-        private readonly TaskItemsServices _taskItemsServices;
-        private readonly TokenServices _tokenService;
+        private readonly ITaskItemsServices _taskItemsServices;
+        private readonly ITokenServices _tokenService;
         private readonly ILogger _logger;
 
-        public TaskItemUseCases(TaskItemsServices taskItemsServices, TokenServices tokenService, ILogger logger)
+        public TaskItemUseCases(ITaskItemsServices taskItemsServices, ITokenServices tokenService, ILogger logger)
         {
             _taskItemsServices = taskItemsServices;
             _tokenService = tokenService;
-            _logger = logger;  
+            _logger = logger;
         }
 
         public async Task<CustumHttpResponse> createTaskItem(ClaimsPrincipal User, TaskReq taskReq)
@@ -78,7 +78,7 @@ namespace TaskHub.Business.UseCases
 
                 TaskDataRes taskDataRes = await _taskItemsServices.getTaskById(taskItemId);
 
-                if(taskDataRes.UserId == _tokenService.GetGuid(User))
+                if (taskDataRes.UserId == _tokenService.GetGuid(User))
                 {
                     GenericResponse response = CustomHttpErrorNumber.success;
 
@@ -155,7 +155,7 @@ namespace TaskHub.Business.UseCases
 
                 _logger.LogInformation($"Fetching all task items for user ID: {userId}");
 
-                Paginate<TaskDataRes> taskDataRes = _taskItemsServices.getAllUserTaskItem(userId, sortBy,dueDate, status, priority, count, page);
+                Paginate<TaskDataRes> taskDataRes = _taskItemsServices.getAllUserTaskItem(userId, sortBy, dueDate, status, priority, count, page);
 
                 GenericResponse response = CustomHttpErrorNumber.success;
 

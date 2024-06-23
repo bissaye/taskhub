@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using TaskHub.Business.Models.DTO.Request;
+﻿using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
+using TaskHub.Business.Services.Interfaces;
 using TaskHub.Data;
 using TaskHub.Data.Models.Custum;
 using TaskHub.Data.Models.DAO;
 using TaskStatus = TaskHub.Data.Models.DAO.TaskStatus;
 
-namespace TaskHub.Business.Services
+namespace TaskHub.Business.Services.Implementations
 {
-    public class TaskItemsServices
+    public class TaskItemsServices: ITaskItemsServices
     {
-        private readonly Gateway _gateway;
-        
-        public TaskItemsServices(Gateway gateway)
+        private readonly IGateway _gateway;
+
+        public TaskItemsServices(IGateway gateway)
         {
             _gateway = gateway;
         }

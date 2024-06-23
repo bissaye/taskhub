@@ -1,23 +1,23 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
 using TaskHub.Business.Models.Errors;
-using TaskHub.Business.Services;
+using TaskHub.Business.Services.Interfaces;
+using TaskHub.Business.UseCases.Interfaces;
 using TaskHub.Data.Models.DAO;
 using TaskHub.Data.Models.Errors;
 
-namespace TaskHub.Business.UseCases
+namespace TaskHub.Business.UseCases.Implementations
 {
-    public class AuthUseCases
+    public class AuthUseCases : IAuthUseCases
     {
-        private readonly UserServices _userService;
-        private readonly TokenServices _tokenService;
+        private readonly IUserServices _userService;
+        private readonly ITokenServices _tokenService;
         private readonly ILogger _logger;
 
-        public AuthUseCases( UserServices userServices, TokenServices tokenServices, ILogger logger)
+        public AuthUseCases(IUserServices userServices, ITokenServices tokenServices, ILogger logger)
         {
             _userService = userServices;
             _tokenService = tokenServices;

@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Text;
+﻿using System.Text;
 using System.Security.Cryptography;
-using TaskHub.Data;
-using TaskHub.Data.Models.DAO;
+using TaskHub.Business.Services.Interfaces;
 
-namespace TaskHub.Business.Services
+namespace TaskHub.Business.Services.Implementations
 {
-    public class PasswordServices
+    public class PasswordServices : IPasswordServices
     {
         public PasswordServices()
         {

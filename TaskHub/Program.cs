@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Any;
 using TaskHub.Business;
 using TaskHub.Data;
 using TaskHub.Extensions;
@@ -17,6 +18,7 @@ builder.WebHost.ConfigureAppConfiguration((a, config) =>
 //Add Logger
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Services.AddSingleton(typeof(ILogger), builder.Services.BuildServiceProvider().GetService<ILogger<AnyType>>());
 
 //Add cors policies
 builder.Services.AddCors(options =>
@@ -41,12 +43,16 @@ builder.Services.AddTokenJWT(builder.Configuration);
 // Add Business Services
 builder.Services.AddTaskHubBusinessServices(builder.Configuration);
 
+// Add Business Uses Cases
+builder.Services.AddTaskHubBusinessUsesCases();
+
 // Add others services to the container.
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddGenerationDocumentation();
+
 
 var app = builder.Build();
 

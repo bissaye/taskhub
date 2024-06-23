@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TaskHub.Data.Repositories;
+using TaskHub.Data.Repositories.Implementations;
+using TaskHub.Data.Repositories.Interfaces;
 
 namespace TaskHub.Data
 {
-    public class Gateway
+    public class Gateway : IGateway
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -17,14 +18,14 @@ namespace TaskHub.Data
             _serviceProvider = serviceProvider;
         }
 
-        public TaskItemRepository TaskItemRepository()
+        public ITaskItemRepository TaskItemRepository()
         {
-            return _serviceProvider.GetRequiredService<TaskItemRepository>();
+            return _serviceProvider.GetRequiredService<ITaskItemRepository>();
         }
 
-        public UserRepository UserRepository()
+        public IUserRepository UserRepository()
         {
-            return _serviceProvider.GetRequiredService<UserRepository>();
+            return _serviceProvider.GetRequiredService<IUserRepository>();
         }
     }
 }

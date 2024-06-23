@@ -1,18 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using TaskHub.Business.Models.Errors;
-using TaskHub.Data;
+using TaskHub.Business.Services.Interfaces;
 
-namespace TaskHub.Business.Services
+namespace TaskHub.Business.Services.Implementations
 {
-    public class TokenServices
+    public class TokenServices : ITokenServices
     {
         private SymmetricSecurityKey _SymmetricSecurityKey;
         private string? _audience;
@@ -27,7 +23,7 @@ namespace TaskHub.Business.Services
             _cookieName = TokTokenAuthentication.GetSection("CookieName").Value;
             _SymmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokTokenAuthentication.GetSection("SecretKey").Value));
 
-         }
+        }
 
 
 

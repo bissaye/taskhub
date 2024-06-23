@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskHub.Data.Models.DAO;
 using TaskHub.Data.Models.Errors;
+using TaskHub.Data.Repositories.Interfaces;
 
-namespace TaskHub.Data.Repositories
+namespace TaskHub.Data.Repositories.Implementations
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly DataContext _dataContext;
 
@@ -48,7 +49,7 @@ namespace TaskHub.Data.Repositories
         }
 
 
-        public async Task<User> getUserByMail(String email)
+        public async Task<User> getUserByMail(string email)
         {
             try
             {

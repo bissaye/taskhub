@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
-using TaskHub.Business.Services;
-using TaskHub.Business.UseCases;
-using TaskHub.Data;
+using TaskHub.Business.UseCases.Interfaces;
+
 
 namespace TaskHub.Controllers.api.v1
 {
@@ -14,13 +12,11 @@ namespace TaskHub.Controllers.api.v1
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserUsesCases _userUseCases;
-        private readonly ILogger<UserController> _logger;
+        private readonly IUserUsesCases _userUseCases;
 
-        public UserController(UserServices userServices, TokenServices tokenServices, ILogger<UserController> logger)
+        public UserController(IUserUsesCases userUseCases)
         {
-            _logger = logger;
-            _userUseCases = new UserUsesCases(userServices, tokenServices, _logger);
+            _userUseCases = userUseCases;
         }
 
         /// <summary>

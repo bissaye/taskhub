@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TaskHub.Data.Repositories;
+using TaskHub.Data.Repositories.Implementations;
+using TaskHub.Data.Repositories.Interfaces;
 
 namespace TaskHub.Data
 {
@@ -19,13 +20,13 @@ namespace TaskHub.Data
         }
         public static void AddTaskHubRepositories(this IServiceCollection services)
         {
-            services.AddScoped<UserRepository>(serviceProvider =>
+            services.AddScoped<IUserRepository>(serviceProvider =>
             {
                 var dbContext = serviceProvider.GetService<DataContext>();
                 return new UserRepository(dbContext);
             });
 
-            services.AddScoped<TaskItemRepository>(serviceProvider =>
+            services.AddScoped<ITaskItemRepository>(serviceProvider =>
             {
                 var dbContext = serviceProvider.GetService<DataContext>();
                 return new TaskItemRepository(dbContext);
@@ -34,7 +35,10 @@ namespace TaskHub.Data
 
         public static void AddTaskHubGateway(this IServiceCollection services)
         {
-            services.AddScoped<Gateway>();
+            services.AddScoped<IGateway>(serviceProvider =>
+            {
+                return new Gateway(serviceProvider);
+            });
         }
     }
 

@@ -2,10 +2,11 @@
 using TaskHub.Data.Models.Custum;
 using TaskStatus = TaskHub.Data.Models.DAO.TaskStatus;
 using TaskHub.Data.Models.Errors;
+using TaskHub.Data.Repositories.Interfaces;
 
-namespace TaskHub.Data.Repositories
+namespace TaskHub.Data.Repositories.Implementations
 {
-    public class TaskItemRepository
+    public class TaskItemRepository : ITaskItemRepository
     {
         private readonly DataContext _dataContext;
 
@@ -50,19 +51,19 @@ namespace TaskHub.Data.Repositories
 
         }
 
-        public Paginate<TaskItem> getAllUserTaskItems(Guid userId, string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null , int count = 10, int page = 1)
+        public Paginate<TaskItem> getAllUserTaskItems(Guid userId, string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
         {
             try
             {
                 List<TaskItem> taskItems = _dataContext.TaskItems.
                     Where(taskItem => taskItem.UserId == userId).ToList();
-   
-                if(dueDate != null)
+
+                if (dueDate != null)
                 {
                     taskItems = taskItems.FindAll(taskItem => taskItem.DueDate == dueDate);
                 }
 
-                if(status != null)
+                if (status != null)
                 {
                     taskItems = taskItems.FindAll(taskItems => taskItems.Status == status);
                 }

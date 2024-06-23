@@ -2,17 +2,18 @@
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
 using TaskHub.Business.Models.Errors;
+using TaskHub.Business.Services.Interfaces;
 using TaskHub.Data;
 using TaskHub.Data.Models.DAO;
 using TaskHub.Data.Models.Errors;
 
-namespace TaskHub.Business.Services
+namespace TaskHub.Business.Services.Implementations
 {
-    public class UserServices
+    public class UserServices : IUserServices
     {
-        private readonly Gateway _gateway;
+        private readonly IGateway _gateway;
         private readonly PasswordServices _passwordServices;
-        public UserServices(Gateway gateway)
+        public UserServices(IGateway gateway)
         {
             _gateway = gateway;
             _passwordServices = new PasswordServices();
@@ -39,7 +40,7 @@ namespace TaskHub.Business.Services
                 User user = await _gateway.UserRepository().getUserByMail(email);
                 return true;
             }
-            catch(NotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return false;
             }
@@ -52,7 +53,7 @@ namespace TaskHub.Business.Services
 
         public async Task<UserDataRes> updateUser(Guid userId, UserUpdateReq userUpdateReq)
         {
-            User user = await _gateway.UserRepository().updateUser(userId , userUpdateReqToUser(userUpdateReq));
+            User user = await _gateway.UserRepository().updateUser(userId, userUpdateReqToUser(userUpdateReq));
             return userToUserDataRes(user);
         }
 

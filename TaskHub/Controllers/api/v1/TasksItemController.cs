@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
-using TaskHub.Business.Services;
-using TaskHub.Business.UseCases;
+using TaskHub.Business.UseCases.Interfaces;
 using TaskStatus = TaskHub.Data.Models.DAO.TaskStatus;
 
 namespace TaskHub.Controllers.api.v1
@@ -13,13 +12,11 @@ namespace TaskHub.Controllers.api.v1
     [ApiController]
     public class TasksItemController : ControllerBase
     {
-        private readonly TaskItemUseCases _taskItemUseCases;
-        private readonly ILogger<TasksItemController> _logger;
+        private readonly ITaskItemUseCases _taskItemUseCases;
 
-        public TasksItemController(TaskItemsServices taskItemsServices, TokenServices tokenServices, ILogger<TasksItemController> logger)
+        public TasksItemController(ITaskItemUseCases taskItemUseCases)
         {
-            _logger = logger;
-            _taskItemUseCases = new TaskItemUseCases(taskItemsServices, tokenServices, logger);
+            _taskItemUseCases = taskItemUseCases;
 
         }
 
