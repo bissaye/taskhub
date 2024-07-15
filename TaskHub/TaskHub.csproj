@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskHub.Business\TaskHub.Business.csproj" />
+    <ProjectReference Include="..\TaskHub.Cache\TaskHub.Cache.csproj" />
     <ProjectReference Include="..\TaskHub.Data\TaskHub.Data.csproj" />
   </ItemGroup>
 
