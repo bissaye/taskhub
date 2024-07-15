@@ -3,15 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using TaskHub.Business.Services.Interfaces;
+using TaskHub.Cache.Services.Interfaces;
 
-namespace TaskHub.Business.Services.Implementations
+namespace TaskHub.Cache.Services.Implementations
 {
     public class RedisCacheServices : ICacheServices
     {

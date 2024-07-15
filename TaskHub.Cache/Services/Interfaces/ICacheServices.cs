@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskHub.Business.Services.Interfaces
+namespace TaskHub.Cache.Services.Interfaces
 {
     public interface ICacheServices
     {

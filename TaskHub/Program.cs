@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Any;
 using TaskHub.Business;
+using TaskHub.Cache;
 using TaskHub.Data;
 using TaskHub.Extensions;
 
@@ -41,7 +42,7 @@ builder.Services.AddTaskHubGateway();
 builder.Services.AddTokenJWT(builder.Configuration);
 
 //Add business cache
-builder.Services.AddTaskHubBusinessCache(builder.Configuration);
+builder.Services.AddTaskHubCache(builder.Configuration);
 
 // Add Business Services
 builder.Services.AddTaskHubBusinessServices(builder.Configuration);

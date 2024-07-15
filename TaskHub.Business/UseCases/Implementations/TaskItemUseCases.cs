@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
 using TaskHub.Business.Models.Errors;
 using TaskHub.Business.Services.Interfaces;
 using TaskHub.Business.UseCases.Interfaces;
+using TaskHub.Cache.Services.Interfaces;
 using TaskHub.Data.Models.Custum;
-using TaskHub.Data.Models.DAO;
 using TaskHub.Data.Models.Errors;
 using TaskStatus = TaskHub.Data.Models.DAO.TaskStatus;
 
