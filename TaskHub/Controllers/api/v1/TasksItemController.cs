@@ -59,7 +59,7 @@ namespace TaskHub.Controllers.api.v1
         [HttpGet("get/all")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<TaskDataRes>), 200)]
-        public CustumHttpResponse getAllTaskItemData(string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
+        public Task<CustumHttpResponse> getAllTaskItemData(string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
         {
             return _taskItemUseCases.getAllTaskItemData(User, sortBy, dueDate, status, priority, count, page);
         }

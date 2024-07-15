@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
@@ -7,6 +8,7 @@ using TaskHub.Business.Models.Errors;
 using TaskHub.Business.Services.Interfaces;
 using TaskHub.Business.UseCases.Interfaces;
 using TaskHub.Data.Models.Custum;
+using TaskHub.Data.Models.DAO;
 using TaskHub.Data.Models.Errors;
 using TaskStatus = TaskHub.Data.Models.DAO.TaskStatus;
 
@@ -17,12 +19,23 @@ namespace TaskHub.Business.UseCases.Implementations
         private readonly ITaskItemsServices _taskItemsServices;
         private readonly ITokenServices _tokenService;
         private readonly ILogger _logger;
+        private readonly ICacheServices _cacheServices;
+        private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(5);
 
         public TaskItemUseCases(ITaskItemsServices taskItemsServices, ITokenServices tokenService, ILogger logger)
         {
             _taskItemsServices = taskItemsServices;
             _tokenService = tokenService;
             _logger = logger;
+        }
+
+
+        public TaskItemUseCases(ITaskItemsServices taskItemsServices, ITokenServices tokenService, ILogger logger, ICacheServices cacheServices)
+        {
+            _taskItemsServices = taskItemsServices;
+            _tokenService = tokenService;
+            _logger = logger;
+            _cacheServices = cacheServices;
         }
 
         public async Task<CustumHttpResponse> createTaskItem(ClaimsPrincipal User, TaskReq taskReq)
@@ -76,12 +89,25 @@ namespace TaskHub.Business.UseCases.Implementations
             {
                 _logger.LogInformation($"Fetching task item details for Task ID: {taskItemId}");
 
-                TaskDataRes taskDataRes = await _taskItemsServices.getTaskById(taskItemId);
+                TaskDataRes taskDataRes;
 
+                string cacheKey = $"Task_{taskItemId}";
+                var cacheData = await _cacheServices.GetCachedDateAsync<TaskDataRes>(cacheKey);
+
+                if(cacheData == null)
+                {
+                    taskDataRes = await _taskItemsServices.getTaskById(taskItemId);
+                }
+                else
+                {
+                    taskDataRes = cacheData;
+                }
+ 
                 if (taskDataRes.UserId == _tokenService.GetGuid(User))
                 {
-                    GenericResponse response = CustomHttpErrorNumber.success;
+                    if (cacheData != null) _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, taskDataRes, _cacheDuration);
 
+                    GenericResponse response = CustomHttpErrorNumber.success;
                     response.detail = taskDataRes;
 
                     return new CustumHttpResponse(
@@ -146,16 +172,28 @@ namespace TaskHub.Business.UseCases.Implementations
             }
         }
 
-        public CustumHttpResponse getAllTaskItemData(ClaimsPrincipal User, string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
+        public async Task<CustumHttpResponse> getAllTaskItemData(ClaimsPrincipal User, string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
         {
             try
             {
-
                 Guid userId = _tokenService.GetGuid(User);
+
+                string cacheKey = $"Tasks_{userId}_{sortBy}_{dueDate}_{status}_{priority}_{count}_{page}";
+                var cacheData = await _cacheServices.GetCachedDateAsync<Paginate<TaskDataRes>>(cacheKey);
 
                 _logger.LogInformation($"Fetching all task items for user ID: {userId}");
 
-                Paginate<TaskDataRes> taskDataRes = _taskItemsServices.getAllUserTaskItem(userId, sortBy, dueDate, status, priority, count, page);
+                Paginate<TaskDataRes> taskDataRes;
+
+                if(cacheData != null)
+                {
+                    taskDataRes = cacheData;
+                }
+                else
+                {
+                    taskDataRes = _taskItemsServices.getAllUserTaskItem(userId, sortBy, dueDate, status, priority, count, page);
+                    _cacheServices.SetCachedDateAsync<Paginate<TaskDataRes>>(cacheKey, taskDataRes, _cacheDuration);
+                }
 
                 GenericResponse response = CustomHttpErrorNumber.success;
 
@@ -210,6 +248,11 @@ namespace TaskHub.Business.UseCases.Implementations
                     GenericResponse response = CustomHttpErrorNumber.success;
 
                     response.detail = await _taskItemsServices.updateTaskIem(taskItemId, taskReq);
+
+                    string cacheKey = $"Task_{taskItemId}";
+                    string AllTasksPattern = $"Tasks_{userId}_*";
+                    _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, response.detail, _cacheDuration);
+                    _cacheServices.InvalidateDatasAsync(AllTasksPattern);
 
                     return new CustumHttpResponse(
                         content: response,
@@ -287,6 +330,11 @@ namespace TaskHub.Business.UseCases.Implementations
 
                     response.detail = await _taskItemsServices.updateTaskIemStatus(taskItemId, status);
 
+                    string cacheKey = $"Task_{taskItemId}";
+                    string AllTasksPattern = $"Tasks_{userId}_*";
+                    _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, response.detail, _cacheDuration);
+                    _cacheServices.InvalidateDatasAsync(AllTasksPattern);
+
                     return new CustumHttpResponse(
                         content: response,
                         statusCode: 200
@@ -362,6 +410,11 @@ namespace TaskHub.Business.UseCases.Implementations
                     GenericResponse response = CustomHttpErrorNumber.success;
 
                     response.detail = await _taskItemsServices.updateTaskIemPriority(taskItemId, priority);
+
+                    string cacheKey = $"Task_{taskItemId}";
+                    string AllTasksPattern = $"Tasks_{userId}_*";
+                    _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, response.detail, _cacheDuration);
+                    _cacheServices.InvalidateDatasAsync(AllTasksPattern);
 
                     return new CustumHttpResponse(
                         content: response,
@@ -439,6 +492,9 @@ namespace TaskHub.Business.UseCases.Implementations
                     GenericResponse response = CustomHttpErrorNumber.success;
 
                     _taskItemsServices.deleteTaskItem(taskItemId);
+
+                    string cacheKey = $"Task_{taskItemId}";
+                    _cacheServices.RemovedCachedDataAsync(cacheKey);
 
                     response.detail = "task Item deleted successfully";
 

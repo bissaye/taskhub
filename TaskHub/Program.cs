@@ -40,6 +40,9 @@ builder.Services.AddTaskHubGateway();
 //Add JWT Token
 builder.Services.AddTokenJWT(builder.Configuration);
 
+//Add business cache
+builder.Services.AddTaskHubBusinessCache(builder.Configuration);
+
 // Add Business Services
 builder.Services.AddTaskHubBusinessServices(builder.Configuration);
 
