@@ -1,4 +1,4 @@
-using Microsoft.OpenApi.Any;
+    using Microsoft.OpenApi.Any;
 using TaskHub.Business;
 using TaskHub.Cache;
 using TaskHub.Data;
@@ -68,6 +68,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Heldis Api V1");
     c.RoutePrefix = "swagger";
 });
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

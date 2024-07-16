@@ -26,118 +26,56 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public async Task<CustumHttpResponse> getToken(UserAuthReq userAuth)
         {
-            try
+            _logger.LogInformation($"Attempting to authenticate user {userAuth.Email}");
+
+            User user = await _userService.checkAuthUser(userAuth);
+
+            GenericResponse response = CustomHttpErrorNumber.success;
+            response.detail = new UserAuthRes()
             {
-                _logger.LogInformation($"Attempting to authenticate user {userAuth.Email}");
+                Access = _tokenService.GenerateAccessToken(_tokenService.GetClaims(user.Id)),
+                Refresh = _tokenService.GenerateRefreshToken(_tokenService.GetClaims(user.Id, true)),
+                User = _userService.userToUserDataRes(user)
+            };
 
-                User user = await _userService.checkAuthUser(userAuth);
+            _logger.LogInformation($"User {userAuth.Email} authenticated successfully");
 
-                _logger.LogInformation($"User {userAuth.Email} authenticated successfully");
-
-                GenericResponse response = CustomHttpErrorNumber.success;
-                response.detail = new UserAuthRes()
-                {
-                    Access = _tokenService.GenerateAccessToken(_tokenService.GetClaims(user.Id)),
-                    Refresh = _tokenService.GenerateRefreshToken(_tokenService.GetClaims(user.Id, true)),
-                    User = _userService.userToUserDataRes(user)
-                };
-
-                return new CustumHttpResponse(
-                content: response,
-                statusCode: 200
-                );
-
-            }
-            catch (Exception ex) when (ex is BadCredentialsErrorException || ex is NotFoundException)
-            {
-                _logger.LogWarning($"Bad credentials provided for user {userAuth.Email}: {ex.Message}");
-
-                GenericResponse response = CustomHttpErrorNumber.badCredentials;
-                response.detail = ex.Message;
-
-                return new CustumHttpResponse(
-                content: response,
-                statusCode: 401
-                );
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error occurred during authentication for user {userAuth.Email}: {ex.Message}");
-
-                GenericResponse response = CustomHttpErrorNumber.serverError;
-                response.detail = ex.Message;
-
-                return new CustumHttpResponse(
-                content: response,
-                statusCode: 500
-                );
-            }
+            return new CustumHttpResponse(
+            content: response,
+            statusCode: 200
+            );
         }
 
         public async Task<CustumHttpResponse> refreshToken(ClaimsPrincipal User)
         {
-            try
+
+            Guid userId = _tokenService.GetGuid(User);
+
+            _logger.LogInformation($"Refreshing token for user {userId}");
+
+            if (_tokenService.CheckRefreshToken(User))
             {
-                Guid userId = _tokenService.GetGuid(User);
+                GenericResponse response = CustomHttpErrorNumber.success;
 
-                _logger.LogInformation($"Refreshing token for user {userId}");
+                UserDataRes user = await _userService.getUserDataResById(userId);
 
-                if (_tokenService.CheckRefreshToken(User))
+                response.detail = new UserAuthRes()
                 {
-                    GenericResponse response = CustomHttpErrorNumber.success;
+                    Access = _tokenService.GenerateAccessToken(_tokenService.GetClaims(user.Id)),
+                    Refresh = _tokenService.GenerateRefreshToken(_tokenService.GetClaims(user.Id, true)),
+                    User = user
+                };
 
-                    UserDataRes user = await _userService.getUserDataResById(userId);
-
-                    _logger.LogInformation($"Token refreshed successfully for user {userId}");
-
-                    response.detail = new UserAuthRes()
-                    {
-                        Access = _tokenService.GenerateAccessToken(_tokenService.GetClaims(user.Id)),
-                        Refresh = _tokenService.GenerateRefreshToken(_tokenService.GetClaims(user.Id, true)),
-                        User = user
-                    };
-
-                    return new CustumHttpResponse(
-                        content: response,
-                        statusCode: 200
-                        );
-                }
-                else
-                {
-                    GenericResponse response = CustomHttpErrorNumber.badCredentials;
-
-                    response.detail = "bad token";
-
-                    return new CustumHttpResponse(
-                        content: response,
-                        statusCode: 401
-                        );
-                }
-            }
-            catch (Exception ex) when (ex is NotFoundException || ex is BadTokenErrorException)
-            {
-                _logger.LogWarning($"Refresh token failed : {ex.Message}");
-
-                GenericResponse response = CustomHttpErrorNumber.badCredentials;
-
-                response.detail = ex.Message;
+                _logger.LogInformation($"Token refreshed successfully for user {userId}");
 
                 return new CustumHttpResponse(
                     content: response,
-                    statusCode: 401
+                    statusCode: 200
                     );
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogWarning($"Error occurred while refreshing token : {ex.Message}");
-
-                GenericResponse response = CustomHttpErrorNumber.serverError;
-                response.detail = ex.Message;
-
-                return new CustumHttpResponse(
-                content: response,
-                statusCode: 500
-                );
+                throw new BadTokenErrorException("bad token");
             }
         }
     }
