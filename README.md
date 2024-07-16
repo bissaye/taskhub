@@ -15,7 +15,10 @@ The project is divided into several components:
   - **Models**: Data models used by the business logic.
   - **Services**: Business services to handle complex operations.
   - **UseCases**: Use cases implementing specific business logic.
+  - **ExceptionHandler**: Handle all errors in app and return specifics responses
 
+- **TaskHub.Cache**: The project containing cache management.
+  
 - **TaskHub.Data**: The project containing data access and database management.
   - **Models**: Data models and entities used by data access.
   - **Repositories**: Repositories for data access and manipulation.
