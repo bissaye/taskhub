@@ -74,7 +74,7 @@ namespace TaskHub.Cache.Services.Implementations
                 var server = ConnectionMultiplexer.Connect(_configuration.GetConnectionString("Redis")).GetServer(_configuration.GetConnectionString("Redis"));
                 foreach (var cacheKey in server.Keys(pattern: pattern))
                 {
-                    _cache.RemoveAsync(cacheKey);
+                    await _cache.RemoveAsync(cacheKey);
                 }
             }
             catch (Exception ex)
