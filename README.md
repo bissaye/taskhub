@@ -27,7 +27,7 @@ The project is divided into several components:
 
 Before getting started, make sure you have the following tools installed:
 
-- [.NET SDK 6](https://dotnet.microsoft.com/download)
+- [.NET SDK 8](https://dotnet.microsoft.com/download)
 - [SQLite](https://www.nuget.org/packages/sqlite-net)
 
 ## Configuration
