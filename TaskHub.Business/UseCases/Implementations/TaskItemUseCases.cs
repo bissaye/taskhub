@@ -41,7 +41,7 @@ namespace TaskHub.Business.UseCases.Implementations
         {
             Guid userId = _tokenService.GetGuid(User);
 
-            _logger.LogInformation($"Creating task item for user ID: {userId}");
+            _logger.LogInformation("Creating task item for {userId}", userId);
 
             GenericResponse response = CustomHttpErrorNumber.success;
 
@@ -56,7 +56,7 @@ namespace TaskHub.Business.UseCases.Implementations
         public async Task<CustumHttpResponse> getTaskItemData(ClaimsPrincipal User, Guid taskItemId)
         {
 
-            _logger.LogInformation($"Fetching task item details for Task ID: {taskItemId}");
+            _logger.LogInformation("Fetching task item details for {taskItemId}", taskItemId);
 
             TaskDataRes taskDataRes;
 
@@ -99,7 +99,7 @@ namespace TaskHub.Business.UseCases.Implementations
             string cacheKey = $"Tasks_{userId}_{sortBy}_{dueDate}_{status}_{priority}_{count}_{page}";
             var cacheData = await _cacheServices.GetCachedDateAsync<Paginate<TaskDataRes>>(cacheKey);
 
-            _logger.LogInformation($"Fetching all task items for user ID: {userId}");
+            _logger.LogInformation("Fetching all task items for {userId}", userId);
 
             Paginate<TaskDataRes> taskDataRes;
 
@@ -130,7 +130,7 @@ namespace TaskHub.Business.UseCases.Implementations
         {
             Guid userId = _tokenService.GetGuid(User);
 
-            _logger.LogInformation($"Updating task item with ID: {taskItemId} for user ID: {userId}");
+            _logger.LogInformation("Updating task item with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 
             TaskDataRes taskDataRes = await _taskItemsServices.getTaskById(taskItemId);
 
@@ -160,7 +160,7 @@ namespace TaskHub.Business.UseCases.Implementations
         {
             Guid userId = _tokenService.GetGuid(User);
 
-            _logger.LogInformation($"Updating task item status with ID: {taskItemId} for user ID: {userId}");
+            _logger.LogInformation("Updating task item status with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 
             TaskDataRes taskDataRes = await _taskItemsServices.getTaskById(taskItemId);
 
@@ -190,7 +190,7 @@ namespace TaskHub.Business.UseCases.Implementations
         {
             Guid userId = _tokenService.GetGuid(User);
 
-            _logger.LogInformation($"Updating task item priority with ID: {taskItemId} for user ID: {userId}");
+            _logger.LogInformation("Updating task item priority with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 
             TaskDataRes taskDataRes = await _taskItemsServices.getTaskById(taskItemId);
 
@@ -221,7 +221,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             Guid userId = _tokenService.GetGuid(User);
 
-            _logger.LogInformation($"Deleting task item with ID: {taskItemId} for user ID: {userId}");
+            _logger.LogInformation("Deleting task item with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 
             TaskDataRes taskDataRes = await _taskItemsServices.getTaskById(taskItemId);
 

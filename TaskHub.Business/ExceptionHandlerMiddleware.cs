@@ -47,31 +47,31 @@ namespace TaskHub.Business
                     statusCode = HttpStatusCode.Unauthorized;
                     response = CustomHttpErrorNumber.badCredentials;
                     response.detail = badCredentialsError.Message;
-                    _logger.LogWarning($"Bad Credentials error: {badCredentialsError.Message}");
+                    _logger.LogWarning("Bad Credentials error: {Message}", badCredentialsError.Message);
                     break;
                 case BadTokenErrorException badTokenError:
                     statusCode = HttpStatusCode.Unauthorized;
                     response = CustomHttpErrorNumber.badCredentials;
                     response.detail = badTokenError.Message;
-                    _logger.LogWarning($"Bad token error: {badTokenError.Message}");
+                    _logger.LogWarning("Bad token error: {Message}", badTokenError.Message);
                     break;
                 case NotFoundException notFoundException:
                     statusCode = HttpStatusCode.NotFound;
                     response = CustomHttpErrorNumber.notfound;
                     response.detail = notFoundException.Message;
-                    _logger.LogWarning($"Resource not found: {notFoundException.Message}");
+                    _logger.LogWarning("Resource not found: {Message}", notFoundException.Message);
                     break;
                 case UnauthorizedAccessException unauthorizedAccessException:
                     statusCode = HttpStatusCode.Unauthorized;
                     response = CustomHttpErrorNumber.unauthorized;
                     response.detail = unauthorizedAccessException.Message;
-                    _logger.LogWarning($"Unauthorized access to read data: {unauthorizedAccessException.Message}");
+                    _logger.LogWarning("Unauthorized access to read data: {Message}", unauthorizedAccessException.Message);
                     break;
                 default:
                     statusCode = HttpStatusCode.InternalServerError;
                     response = CustomHttpErrorNumber.serverError;
                     response.detail = ex.Message;
-                    _logger.LogError($"Internal server error: {ex.Message}");
+                    _logger.LogError("Internal server error: {Message}", ex.Message);
                     break;
             }
 

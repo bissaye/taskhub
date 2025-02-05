@@ -32,7 +32,7 @@ namespace TaskHub.Cache.Services.Implementations
 
             }catch( Exception ex)
             {
-                _logger.LogError($"Cache Error: {ex.Message}");
+                _logger.LogError("Cache Error: {Message}", ex.Message);
                 return default;
             }
 
@@ -46,7 +46,7 @@ namespace TaskHub.Cache.Services.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Cache Error: {ex.Message}");
+                _logger.LogError("Cache Error: {Message}", ex.Message);
             }
         }
 
@@ -63,7 +63,7 @@ namespace TaskHub.Cache.Services.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Cache Error: {ex.Message}");
+                _logger.LogError("Cache Error: {Message}", ex.Message);
             }
         }
 
@@ -79,7 +79,7 @@ namespace TaskHub.Cache.Services.Implementations
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Cache Error: {ex.Message}");
+                _logger.LogError("Cache Error: {Message}", ex.Message);
             }
 
         }

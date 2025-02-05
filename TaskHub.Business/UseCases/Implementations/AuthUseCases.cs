@@ -26,7 +26,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public async Task<CustumHttpResponse> getToken(UserAuthReq userAuth)
         {
-            _logger.LogInformation($"Attempting to authenticate user {userAuth.Email}");
+            _logger.LogInformation("Attempting to authenticate {User}", userAuth.Email);
 
             User user = await _userService.checkAuthUser(userAuth);
 
@@ -38,7 +38,7 @@ namespace TaskHub.Business.UseCases.Implementations
                 User = _userService.userToUserDataRes(user)
             };
 
-            _logger.LogInformation($"User {userAuth.Email} authenticated successfully");
+            _logger.LogInformation("{User} authenticated successfully", userAuth.Email);
 
             return new CustumHttpResponse(
             content: response,
@@ -51,7 +51,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             Guid userId = _tokenService.GetGuid(User);
 
-            _logger.LogInformation($"Refreshing token for user {userId}");
+            _logger.LogInformation("Refreshing token for {UserId}", userId);
 
             if (_tokenService.CheckRefreshToken(User))
             {
@@ -66,7 +66,7 @@ namespace TaskHub.Business.UseCases.Implementations
                     User = user
                 };
 
-                _logger.LogInformation($"Token refreshed successfully for user {userId}");
+                _logger.LogInformation("Token refreshed successfully for {UserId}", userId);
 
                 return new CustumHttpResponse(
                     content: response,

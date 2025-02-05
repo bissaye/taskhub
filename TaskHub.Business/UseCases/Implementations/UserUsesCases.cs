@@ -23,7 +23,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public async Task<CustumHttpResponse> register(UserRegisterReq userDataReq)
         {
-            _logger.LogInformation($"attempt to register new user {userDataReq.Email}");
+            _logger.LogInformation("attempt to register new user {Email}", userDataReq.Email);
             if (await _userService.checkUserMail(userDataReq.Email))
             {
                 _logger.LogWarning($"Email {userDataReq.Email} already exists");
@@ -38,7 +38,7 @@ namespace TaskHub.Business.UseCases.Implementations
             {
                 _userService.createUser(userDataReq);
 
-                _logger.LogInformation($"User created successfully with email {userDataReq.Email}");
+                _logger.LogInformation("User created successfully with email {Email}", userDataReq.Email);
 
                 GenericResponse response = CustomHttpErrorNumber.success;
 
@@ -56,7 +56,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             Guid userId = _tokenService.GetGuid(User);
 
-            _logger.LogInformation($"Fetching user data user data for Id {userId}");
+            _logger.LogInformation("Fetching user data user data for Id {userId}", userId);
 
             GenericResponse response = CustomHttpErrorNumber.success;
             response.detail = await _userService.getUserDataResById(userId);
@@ -71,7 +71,7 @@ namespace TaskHub.Business.UseCases.Implementations
         {
 
             Guid userId = _tokenService.GetGuid(User);
-            _logger.LogInformation($"Updating user data for ID {userId}");
+            _logger.LogInformation("Updating user data for ID {userId}", userId);
 
             GenericResponse response = CustomHttpErrorNumber.success;
 
@@ -87,7 +87,7 @@ namespace TaskHub.Business.UseCases.Implementations
         public CustumHttpResponse deleteUser(ClaimsPrincipal User)
         {
             Guid userId = _tokenService.GetGuid(User);
-            _logger.LogInformation($"deleting user data for ID {userId}");
+            _logger.LogInformation("deleting user data for ID {userId}", userId);
 
             _userService.deleteUser(_tokenService.GetGuid(User));
 
