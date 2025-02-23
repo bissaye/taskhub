@@ -4,7 +4,7 @@ using TaskStatus = TaskHub.Data.Models.DAO.TaskStatus;
 
 namespace TaskHub.Data.Repositories.Interfaces
 {
-    public interface ITaskItemRepository
+    public interface ITaskItemRepository 
     {
         public Task<TaskItem> createTaskItem(Guid userId, TaskItem task);
         public Task<TaskItem> getTaskItemById(Guid Id);

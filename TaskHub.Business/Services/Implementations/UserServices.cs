@@ -22,7 +22,7 @@ namespace TaskHub.Business.Services.Implementations
         public async Task<User> checkAuthUser(UserAuthReq auth)
         {
 
-            User user = await _gateway.UserRepository().getUserByMail(auth.Email);
+            User user = await _gateway.UserRepository().FindAsync(user => user.Email == auth.Email);
             if (_passwordServices.comparePassword(auth.Password, user.Password))
             {
                 return user;
@@ -37,10 +37,10 @@ namespace TaskHub.Business.Services.Implementations
         {
             try
             {
-                User user = await _gateway.UserRepository().getUserByMail(email);
+                User user = await _gateway.UserRepository().FindAsync(user => user.Email == email);
                 return true;
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
                 return false;
             }
@@ -48,24 +48,24 @@ namespace TaskHub.Business.Services.Implementations
 
         public async void createUser(UserRegisterReq userRegisterReq)
         {
-            await _gateway.UserRepository().createUser(userRegisterReqToUser(userRegisterReq));
+            await _gateway.UserRepository().AddAsync(userRegisterReqToUser(userRegisterReq));
         }
 
         public async Task<UserDataRes> updateUser(Guid userId, UserUpdateReq userUpdateReq)
         {
-            User user = await _gateway.UserRepository().updateUser(userId, userUpdateReqToUser(userUpdateReq));
+            User user = await _gateway.UserRepository().UpdateAsync(userId, userUpdateReqToUser(userUpdateReq));
             return userToUserDataRes(user);
         }
 
         public async Task<UserDataRes> getUserDataResById(Guid Id)
         {
-            User user = await _gateway.UserRepository().getUserById(Id);
+            User user = await _gateway.UserRepository().GetByIdAsync(Id);
             return userToUserDataRes(user);
         }
 
-        public async void deleteUser(Guid Id)
+        public void deleteUser(Guid Id)
         {
-            _gateway.UserRepository().deleteUser(Id);
+            _gateway.UserRepository().DeleteAsync(Id);
         }
 
         public UserDataRes userToUserDataRes(User user)

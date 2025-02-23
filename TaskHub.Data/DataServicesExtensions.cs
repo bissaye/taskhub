@@ -10,7 +10,8 @@ namespace TaskHub.Data
     {
         public static void AddTaskHubDatabase(this IServiceCollection services, IConfiguration configuration, string assembly)
         {
-            string connectionString = configuration.GetSection("SQLiteConnection").GetSection("SQLiteConnection").Value;
+            string connectionString = configuration.GetSection("SQLiteConnection").GetSection("SQLiteConnection").Value 
+            ?? throw new ArgumentNullException("DataBase connection string is missing in configuration.");;
 
             services.AddDbContext<DataContext>(options =>
             {

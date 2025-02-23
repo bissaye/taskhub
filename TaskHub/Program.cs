@@ -10,11 +10,7 @@ var conf = new ConfigurationBuilder().AddEnvironmentVariables().Build();
 var env = conf["ASPNETCORE_ENVIRONMENT"];
 
 //configure appsettings file
-builder.WebHost.ConfigureAppConfiguration((a, config) =>
-{
-    config.AddJsonFile("appsettings.json");
-    config.AddJsonFile(string.Format("appsettings.{0}.json", env));
-});
+builder.Configuration.AddJsonFile("appsettings.json").AddJsonFile(string.Format("appsettings.{0}.json", env));
 
 //Add Logger
 builder.Logging.ClearProviders();
@@ -65,7 +61,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Heldis Api V1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskHub Api V1");
     c.RoutePrefix = "swagger";
 });
 

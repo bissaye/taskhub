@@ -15,13 +15,19 @@ namespace TaskHub.Business.Services.Implementations
         private string? _issuer;
         private string? _cookieName;
 
+
         public TokenServices(IConfiguration configuration)
         {
+
             var TokTokenAuthentication = configuration.GetSection("TokenAuthentication");
+
+            var secretKey = TokTokenAuthentication.GetSection("SecretKey").Value 
+            ?? throw new ArgumentNullException("SecretKey is missing in configuration.");
+
             _audience = TokTokenAuthentication.GetSection("Audience").Value;
             _issuer = TokTokenAuthentication.GetSection("Issuer").Value;
             _cookieName = TokTokenAuthentication.GetSection("CookieName").Value;
-            _SymmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokTokenAuthentication.GetSection("SecretKey").Value));
+            _SymmetricSecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
 
         }
 
@@ -51,7 +57,7 @@ namespace TaskHub.Business.Services.Implementations
                     return false;
                 }
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 return false;
             }
