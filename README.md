@@ -73,8 +73,13 @@ To run the project locally:
 ```bash
 dotnet run
 ```
+or if you want to use docker 
 
-5.The application will start on https://localhost:7278 (by default). You can access the API documentation via Swagger at https://localhost:7278/swagger.
+```bash
+ docker-compose -f ./docker-compose.yml -f docker-compose.<env>.yml up 
+```
+
+5.The application will start on https://localhost:<PORT> (by default). You can access the API documentation via Swagger at https://localhost:<PORT>/swagger.
 
 
 ## Features
