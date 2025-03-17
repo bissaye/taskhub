@@ -31,36 +31,23 @@ namespace TaskHub.Data.Repositories.Implementations {
 
         public async Task<T> FindAsync(Expression<Func<T, bool>> predicate)
         {
-            try
+
+            T? entity = await _dbSet.FirstOrDefaultAsync(predicate);
+            if (entity == null)
             {
-                T entity = await _dbSet.FirstOrDefaultAsync(predicate);
-                if (entity == null)
-                {
-                    throw new NotFoundException($" {typeof(T).Name} not found");
-                }
-                return entity;
+                throw new NotFoundException($" {typeof(T).Name} not found");
             }
-            catch (Exception ex)
-            {
-                throw new ReadErrorException($"Error while searching for entity of type {typeof(T).Name}: {ex.Message}");
-            }
+            return entity;
         }
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            try
+            T? entity = await _dbSet.FindAsync(id);
+            if (entity == null)
             {
-                T? entity = await _dbSet.FindAsync(id);
-                if (entity == null)
-                {
-                    throw new NotFoundException($"{typeof(T).Name} not found");
-                }
-                return entity;
+                throw new NotFoundException($"{typeof(T).Name} not found");
             }
-            catch (Exception ex)
-            {
-                throw new ReadErrorException($"Error while reading entity of type {typeof(T).Name}: {ex.Message}");
-            }
+            return entity;
         }
 
         public async Task<T> UpdateAsync(Guid id, T entity)

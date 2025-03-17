@@ -1,0 +1,7 @@
+services:
+  taskhub-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB_NAME=taskhubdev
+      - DB_USER=taskhub
+      - DB_PASSWORD=taskhub

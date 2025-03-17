@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Bissaye.JwtAuth.Services;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using TaskHub.Business.Models.Claims;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.Errors;
@@ -54,12 +56,12 @@ namespace TaskHub.Business.UseCases.Implementations
         public async Task<CustumHttpResponse> getData(ClaimsPrincipal User)
         {
 
-            Guid userId = _tokenService.GetGuid(User);
+            AuthClaims userClaims = _tokenService.GetClaimsValue<AuthClaims>(User);
 
-            _logger.LogInformation("Fetching user data user data for Id {userId}", userId);
+            _logger.LogInformation("Fetching user data user data for Id {userId}", userClaims.UserId);
 
             GenericResponse response = CustomHttpErrorNumber.success;
-            response.detail = await _userService.getUserDataResById(userId);
+            response.detail = await _userService.getUserDataResById(userClaims.UserId);
 
             return new CustumHttpResponse(
                 content: response,
@@ -70,12 +72,12 @@ namespace TaskHub.Business.UseCases.Implementations
         public async Task<CustumHttpResponse> updateData(ClaimsPrincipal User, UserUpdateReq user)
         {
 
-            Guid userId = _tokenService.GetGuid(User);
-            _logger.LogInformation("Updating user data for ID {userId}", userId);
+            AuthClaims userClaims = _tokenService.GetClaimsValue<AuthClaims>(User);
+            _logger.LogInformation("Updating user data for ID {userId}", userClaims.UserId);
 
             GenericResponse response = CustomHttpErrorNumber.success;
 
-            response.detail = await _userService.updateUser(userId, user);
+            response.detail = await _userService.updateUser(userClaims.UserId, user);
 
             return new CustumHttpResponse(
                 content: response,
@@ -86,10 +88,10 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public CustumHttpResponse deleteUser(ClaimsPrincipal User)
         {
-            Guid userId = _tokenService.GetGuid(User);
-            _logger.LogInformation("deleting user data for ID {userId}", userId);
+            AuthClaims userClaims = _tokenService.GetClaimsValue<AuthClaims>(User);
+            _logger.LogInformation("deleting user data for ID {userId}", userClaims.UserId);
 
-            _userService.deleteUser(_tokenService.GetGuid(User));
+            _userService.deleteUser(userClaims.UserId);
 
             GenericResponse response = CustomHttpErrorNumber.success;
 

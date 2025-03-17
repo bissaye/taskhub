@@ -1,4 +1,5 @@
-    using Microsoft.OpenApi.Any;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
 using TaskHub.Business;
 using TaskHub.Cache;
 using TaskHub.Data;
@@ -35,7 +36,7 @@ builder.Services.AddTaskHubRepositories();
 builder.Services.AddTaskHubGateway();
 
 //Add JWT Token
-builder.Services.AddTokenJWT(builder.Configuration);
+builder.Services.AddJwt(builder.Configuration);
 
 //Add business cache
 builder.Services.AddTaskHubCache(builder.Configuration);
@@ -72,5 +73,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<DataContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();

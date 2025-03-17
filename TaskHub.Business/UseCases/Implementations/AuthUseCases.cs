@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Bissaye.JwtAuth.Services;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using TaskHub.Business.Models.Claims;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
@@ -33,8 +35,8 @@ namespace TaskHub.Business.UseCases.Implementations
             GenericResponse response = CustomHttpErrorNumber.success;
             response.detail = new UserAuthRes()
             {
-                Access = _tokenService.GenerateAccessToken(_tokenService.GetClaims(user.Id)),
-                Refresh = _tokenService.GenerateRefreshToken(_tokenService.GetClaims(user.Id, true)),
+                Access = _tokenService.GenerateToken(_tokenService.GetClaims<AuthClaims>(new AuthClaims { UserId = user.Id }), false),
+                Refresh = _tokenService.GenerateToken(_tokenService.GetClaims<AuthClaims>(new AuthClaims { UserId = user.Id }), true),
                 User = _userService.userToUserDataRes(user)
             };
 
@@ -49,7 +51,7 @@ namespace TaskHub.Business.UseCases.Implementations
         public async Task<CustumHttpResponse> refreshToken(ClaimsPrincipal User)
         {
 
-            Guid userId = _tokenService.GetGuid(User);
+            Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             _logger.LogInformation("Refreshing token for {UserId}", userId);
 
@@ -61,8 +63,8 @@ namespace TaskHub.Business.UseCases.Implementations
 
                 response.detail = new UserAuthRes()
                 {
-                    Access = _tokenService.GenerateAccessToken(_tokenService.GetClaims(user.Id)),
-                    Refresh = _tokenService.GenerateRefreshToken(_tokenService.GetClaims(user.Id, true)),
+                    Access = _tokenService.GenerateToken(_tokenService.GetClaims<AuthClaims>(new AuthClaims { UserId = user.Id }), false),
+                    Refresh = _tokenService.GenerateToken(_tokenService.GetClaims<AuthClaims>(new AuthClaims { UserId = user.Id }), true),
                     User = user
                 };
 

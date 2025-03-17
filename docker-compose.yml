@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+    taskhub-api:
+        image: taskhub-api
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "2000:2000"
+            - "2050:2050"            
+            - "2100:2100"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+            - DB_HOST=db
+            - DB_NAME=${DB_NAME}
+            - DB_USER=${DB_USER}
+            - DB_PASSWORD=${DB_PASSWORD}
+            - REDIS_HOST=redis
+        depends_on:
+            - db
+        networks:
+            - taskhub-network
+
+
+    db:
+        image: postgres:15
+        restart: always
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
+        networks:
+            - taskhub-network
+    
+    redis:
+        image: redis:7
+        restart: always
+        ports:
+            - "6379:6379"
+        networks:
+            - taskhub-network
+        volumes:
+            - redis_data:/data
+
+networks:
+  taskhub-network:
+
+volumes:
+  postgres_data:
+  redis_data:

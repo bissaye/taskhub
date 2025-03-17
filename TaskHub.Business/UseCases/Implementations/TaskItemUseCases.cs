@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Bissaye.JwtAuth.Services;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using TaskHub.Business.Models.Claims;
 using TaskHub.Business.Models.Custum;
 using TaskHub.Business.Models.DTO.Request;
 using TaskHub.Business.Models.DTO.Response;
@@ -39,7 +41,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public async Task<CustumHttpResponse> createTaskItem(ClaimsPrincipal User, TaskReq taskReq)
         {
-            Guid userId = _tokenService.GetGuid(User);
+            Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             _logger.LogInformation("Creating task item for {userId}", userId);
 
@@ -72,7 +74,7 @@ namespace TaskHub.Business.UseCases.Implementations
                 taskDataRes = cacheData;
             }
  
-            if (taskDataRes.UserId == _tokenService.GetGuid(User))
+            if (taskDataRes.UserId == _tokenService.GetClaimsValue<AuthClaims>(User).UserId)
             {
                 if (cacheData != null) _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, taskDataRes, _cacheDuration);
 
@@ -94,7 +96,7 @@ namespace TaskHub.Business.UseCases.Implementations
         public async Task<CustumHttpResponse> getAllTaskItemData(ClaimsPrincipal User, string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
         {
 
-            Guid userId = _tokenService.GetGuid(User);
+            Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             string cacheKey = $"Tasks_{userId}_{sortBy}_{dueDate}_{status}_{priority}_{count}_{page}";
             var cacheData = await _cacheServices.GetCachedDateAsync<Paginate<TaskDataRes>>(cacheKey);
@@ -128,7 +130,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public async Task<CustumHttpResponse> updateTaskItem(ClaimsPrincipal User, Guid taskItemId, TaskReq taskReq)
         {
-            Guid userId = _tokenService.GetGuid(User);
+            Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             _logger.LogInformation("Updating task item with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 
@@ -158,7 +160,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public async Task<CustumHttpResponse> updateTaskItemStatus(ClaimsPrincipal User, Guid taskItemId, TaskStatus status)
         {
-            Guid userId = _tokenService.GetGuid(User);
+            Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             _logger.LogInformation("Updating task item status with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 
@@ -188,7 +190,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
         public async Task<CustumHttpResponse> updateTaskItemPriority(ClaimsPrincipal User, Guid taskItemId, int priority)
         {
-            Guid userId = _tokenService.GetGuid(User);
+            Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             _logger.LogInformation("Updating task item priority with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 
@@ -219,7 +221,7 @@ namespace TaskHub.Business.UseCases.Implementations
         public async Task<CustumHttpResponse> deleteTaskItem(ClaimsPrincipal User, Guid taskItemId)
         {
 
-            Guid userId = _tokenService.GetGuid(User);
+            Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             _logger.LogInformation("Deleting task item with ID: {taskItemId} for user ID: {userId}", taskItemId, userId);
 

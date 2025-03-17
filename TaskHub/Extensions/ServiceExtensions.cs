@@ -1,26 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using System.Reflection;
-using TaskHub.Business;
 
 namespace TaskHub.Extensions
 {
     public static class ServicesExtensions
     {
-        public static void AddTokenJWT(this IServiceCollection services, IConfiguration configuration)
-        {
-            TokenServiceExtension tokenServiceExtension = new TokenServiceExtension(configuration);
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(tokenServiceExtension.Validation())
-            .AddCookie(tokenServiceExtension.RefreshOptions());
-
-        }
-
         public static void AddGenerationDocumentation(this IServiceCollection services)
         {
             services.AddSwaggerGen(options =>
