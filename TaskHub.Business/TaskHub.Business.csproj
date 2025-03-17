@@ -9,7 +9,7 @@
     <ProjectReference Include="..\TaskHub.Data\TaskHub.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Bissaye.JwtAuth" Version="1.0.0" />
+    <PackageReference Include="Bissaye.JwtAuth" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.Build" Version="17.10.4" />
@@ -17,5 +17,10 @@
     <PackageReference Include="StackExchange.Redis" Version="2.8.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Bissaye.JwtAuth">
+      <HintPath>..\..\..\Bissaye.JwtAuth\bin\Release\net9.0\Bissaye.JwtAuth.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

@@ -6,9 +6,10 @@ using TaskHub.Business.Services.Interfaces;
 using TaskHub.Business.UseCases.Interfaces;
 using TaskHub.Business.UseCases.Implementations;
 using Bissaye.JwtAuth;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace TaskHub.Business
 {

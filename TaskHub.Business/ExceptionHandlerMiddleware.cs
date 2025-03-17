@@ -36,7 +36,7 @@ namespace TaskHub.Business
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception ex)
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             HttpStatusCode statusCode;
             GenericResponse response;
@@ -80,7 +80,7 @@ namespace TaskHub.Business
 
             var result = JsonConvert.SerializeObject(response);
 
-            return context.Response.WriteAsync(result);
+            await context.Response.WriteAsync(result);
         }
     }
     

@@ -10,14 +10,25 @@ namespace TaskHub.Data
     {
         public static void AddTaskHubDatabase(this IServiceCollection services, IConfiguration configuration, string assembly)
         {
-            string? connectionString = configuration.GetSection("PostgresSqlConnection").GetSection("PostgresSqlConnection").Value; 
-            
-            ArgumentNullException.ThrowIfNull(connectionString);
+
+            string connectionString = configuration.GetSection("SQLiteConnection").GetSection("SQLiteConnection").Value
+              ?? throw new ArgumentNullException("DataBase connection string is missing in configuration."); ;
 
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseNpgsql(connectionString, b => b.MigrationsAssembly(assembly)); 
+                options.UseSqlite(connectionString, b => b.MigrationsAssembly(assembly));
             });
+
+            //string? connectionString = configuration.GetSection("PostgresSqlConnection").GetSection("PostgresSqlConnection").Value; 
+
+            //ArgumentNullException.ThrowIfNull(connectionString);
+
+            //services.AddDbContext<DataContext>(options =>
+            //{
+            //    options.UseNpgsql(connectionString); 
+            //});
+
+
 
         }
         public static void AddTaskHubRepositories(this IServiceCollection services)
