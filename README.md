@@ -27,8 +27,9 @@ The project is divided into several components:
 
 Before getting started, make sure you have the following tools installed:
 
-- [.NET SDK 8](https://dotnet.microsoft.com/download)
+- [.NET SDK 9](https://dotnet.microsoft.com/download)
 - [SQLite](https://www.nuget.org/packages/sqlite-net)
+- Or NgPsql if you want to use psql and docker
 
 ## Configuration
 
@@ -46,7 +47,15 @@ To configure the database:
   }
 }
 ```
-3. first migration of database initialization is already present, just update your database to initialize it if you want to do it in codefirst
+or if you want to use docker and psql
+
+```json
+  "PostgresSqlConnection": {
+    "PostgresSqlConnection": "Host=localhost;Port=5432;Database=taskhubdev;Username=taskhub;Password=taskhub"
+  }
+```
+
+3. the code automatically migrate de db on setup
 
 ### Environment
 
