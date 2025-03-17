@@ -2,9 +2,10 @@
 
 namespace TaskHub.Business.Models.Custum
 {
-    public class CustumHttpResponse : ObjectResult 
+    public class CustumHttpResponse<T> : ObjectResult where T : class
     {
-        public CustumHttpResponse(object content, int statusCode) : base(content)
+
+        public CustumHttpResponse(GenericResponse<T> content, int statusCode) : base(content)
         {
             StatusCode = statusCode;
         }

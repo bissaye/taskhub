@@ -26,13 +26,13 @@ namespace TaskHub.Business.UseCases.Implementations
             _logger = logger;
         }
 
-        public async Task<CustumHttpResponse> getToken(UserAuthReq userAuth)
+        public async Task<CustumHttpResponse<UserAuthRes>> getToken(UserAuthReq userAuth)
         {
             _logger.LogInformation("Attempting to authenticate {User}", userAuth.Email);
 
             User user = await _userService.checkAuthUser(userAuth);
 
-            GenericResponse response = CustomHttpErrorNumber.success;
+            GenericResponse<UserAuthRes> response = CustomHttpErrorNumber<UserAuthRes>.success;
             response.detail = new UserAuthRes()
             {
                 Access = _tokenService.GenerateToken(_tokenService.GetClaims<AuthClaims>(new AuthClaims { UserId = user.Id }), false),
@@ -42,13 +42,13 @@ namespace TaskHub.Business.UseCases.Implementations
 
             _logger.LogInformation("{User} authenticated successfully", userAuth.Email);
 
-            return new CustumHttpResponse(
+            return new CustumHttpResponse<UserAuthRes> (
             content: response,
             statusCode: 200
             );
         }
 
-        public async Task<CustumHttpResponse> refreshToken(ClaimsPrincipal User)
+        public async Task<CustumHttpResponse<UserAuthRes>> refreshToken(ClaimsPrincipal User)
         {
 
             Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
@@ -57,7 +57,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             if (_tokenService.CheckRefreshToken(User))
             {
-                GenericResponse response = CustomHttpErrorNumber.success;
+                GenericResponse<UserAuthRes> response = CustomHttpErrorNumber<UserAuthRes>.success;
 
                 UserDataRes user = await _userService.getUserDataResById(userId);
 
@@ -70,7 +70,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
                 _logger.LogInformation("Token refreshed successfully for {UserId}", userId);
 
-                return new CustumHttpResponse(
+                return new CustumHttpResponse<UserAuthRes>(
                     content: response,
                     statusCode: 200
                     );

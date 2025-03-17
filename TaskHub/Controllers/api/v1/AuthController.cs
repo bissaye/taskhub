@@ -28,7 +28,7 @@ namespace TaskHub.Controllers.api.v1
         [HttpPost("token")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(UserAuthRes), 200)]
-        public async Task<CustumHttpResponse> getToken([FromBody] UserAuthReq userAuthReq)
+        public async Task<CustumHttpResponse<UserAuthRes>> getToken([FromBody] UserAuthReq userAuthReq)
         {
             return await _authUseCases.getToken(userAuthReq);
         }
@@ -39,7 +39,7 @@ namespace TaskHub.Controllers.api.v1
         [HttpGet("refresh")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(UserAuthRes), 200)]
-        public async Task<CustumHttpResponse> refresh()
+        public async Task<CustumHttpResponse<UserAuthRes>> refresh()
         {
             return await _authUseCases.refreshToken(User);
         }

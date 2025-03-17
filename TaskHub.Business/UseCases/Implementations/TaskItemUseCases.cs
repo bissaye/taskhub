@@ -39,23 +39,23 @@ namespace TaskHub.Business.UseCases.Implementations
             _cacheServices = cacheServices;
         }
 
-        public async Task<CustumHttpResponse> createTaskItem(ClaimsPrincipal User, TaskReq taskReq)
+        public async Task<CustumHttpResponse<TaskDataRes>> createTaskItem(ClaimsPrincipal User, TaskReq taskReq)
         {
             Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
             _logger.LogInformation("Creating task item for {userId}", userId);
 
-            GenericResponse response = CustomHttpErrorNumber.success;
+            GenericResponse<TaskDataRes> response = CustomHttpErrorNumber<TaskDataRes>.success;
 
             response.detail = await _taskItemsServices.createTaskItem(userId, taskReq);
 
-            return new CustumHttpResponse(
+            return new CustumHttpResponse<TaskDataRes>(
                 content: response,
                 statusCode: 201
             );
         }
 
-        public async Task<CustumHttpResponse> getTaskItemData(ClaimsPrincipal User, Guid taskItemId)
+        public async Task<CustumHttpResponse<TaskDataRes>> getTaskItemData(ClaimsPrincipal User, Guid taskItemId)
         {
 
             _logger.LogInformation("Fetching task item details for {taskItemId}", taskItemId);
@@ -78,10 +78,10 @@ namespace TaskHub.Business.UseCases.Implementations
             {
                 if (cacheData != null) _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, taskDataRes, _cacheDuration);
 
-                GenericResponse response = CustomHttpErrorNumber.success;
+                GenericResponse<TaskDataRes> response = CustomHttpErrorNumber<TaskDataRes>.success;
                 response.detail = taskDataRes;
 
-                return new CustumHttpResponse(
+                return new CustumHttpResponse<TaskDataRes>(
                     content: response,
                     statusCode: 200
                 );
@@ -93,7 +93,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
         }
 
-        public async Task<CustumHttpResponse> getAllTaskItemData(ClaimsPrincipal User, string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
+        public async Task<CustumHttpResponse<List<TaskDataRes>>> getAllTaskItemData(ClaimsPrincipal User, string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
         {
 
             Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
@@ -115,20 +115,20 @@ namespace TaskHub.Business.UseCases.Implementations
                 _cacheServices.SetCachedDateAsync<Paginate<TaskDataRes>>(cacheKey, taskDataRes, _cacheDuration);
             }
 
-            GenericResponse response = CustomHttpErrorNumber.success;
+            GenericResponse<List<TaskDataRes>> response = CustomHttpErrorNumber<List<TaskDataRes>>.success;
 
             response.detail = taskDataRes.datas;
             response.page = taskDataRes.page;
             response.count = taskDataRes.count;
             response.total = taskDataRes.total;
 
-            return new CustumHttpResponse(
+            return new CustumHttpResponse<List<TaskDataRes>>(
                 content: response,
                 statusCode: 200
             );
         }
 
-        public async Task<CustumHttpResponse> updateTaskItem(ClaimsPrincipal User, Guid taskItemId, TaskReq taskReq)
+        public async Task<CustumHttpResponse<TaskDataRes>> updateTaskItem(ClaimsPrincipal User, Guid taskItemId, TaskReq taskReq)
         {
             Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
@@ -138,7 +138,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             if (taskDataRes.UserId == userId)
             {
-                GenericResponse response = CustomHttpErrorNumber.success;
+                GenericResponse<TaskDataRes> response = CustomHttpErrorNumber<TaskDataRes>.success;
 
                 response.detail = await _taskItemsServices.updateTaskIem(taskItemId, taskReq);
 
@@ -147,7 +147,7 @@ namespace TaskHub.Business.UseCases.Implementations
                 _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, response.detail, _cacheDuration);
                 _cacheServices.InvalidateDatasAsync(AllTasksPattern);
 
-                return new CustumHttpResponse(
+                return new CustumHttpResponse<TaskDataRes>(
                     content: response,
                     statusCode: 200
                 );
@@ -158,7 +158,7 @@ namespace TaskHub.Business.UseCases.Implementations
             }
         }
 
-        public async Task<CustumHttpResponse> updateTaskItemStatus(ClaimsPrincipal User, Guid taskItemId, TaskStatus status)
+        public async Task<CustumHttpResponse<TaskDataRes>> updateTaskItemStatus(ClaimsPrincipal User, Guid taskItemId, TaskStatus status)
         {
             Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
@@ -168,7 +168,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             if (taskDataRes.UserId == userId)
             {
-                GenericResponse response = CustomHttpErrorNumber.success;
+                GenericResponse<TaskDataRes> response = CustomHttpErrorNumber<TaskDataRes>.success;
 
                 response.detail = await _taskItemsServices.updateTaskIemStatus(taskItemId, status);
 
@@ -177,7 +177,7 @@ namespace TaskHub.Business.UseCases.Implementations
                 _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, response.detail, _cacheDuration);
                 _cacheServices.InvalidateDatasAsync(AllTasksPattern);
 
-                return new CustumHttpResponse(
+                return new CustumHttpResponse<TaskDataRes>(
                     content: response,
                     statusCode: 200
                 );
@@ -188,7 +188,7 @@ namespace TaskHub.Business.UseCases.Implementations
             }
         }
 
-        public async Task<CustumHttpResponse> updateTaskItemPriority(ClaimsPrincipal User, Guid taskItemId, int priority)
+        public async Task<CustumHttpResponse<TaskDataRes>> updateTaskItemPriority(ClaimsPrincipal User, Guid taskItemId, int priority)
         {
             Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
 
@@ -198,7 +198,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             if (taskDataRes.UserId == userId)
             {
-                GenericResponse response = CustomHttpErrorNumber.success;
+                GenericResponse<TaskDataRes> response = CustomHttpErrorNumber<TaskDataRes>.success;
 
                 response.detail = await _taskItemsServices.updateTaskIemPriority(taskItemId, priority);
 
@@ -207,7 +207,7 @@ namespace TaskHub.Business.UseCases.Implementations
                 _cacheServices.SetCachedDateAsync<TaskDataRes>(cacheKey, response.detail, _cacheDuration);
                 _cacheServices.InvalidateDatasAsync(AllTasksPattern);
 
-                return new CustumHttpResponse(
+                return new CustumHttpResponse<TaskDataRes>(
                     content: response,
                     statusCode: 200
                 );
@@ -218,7 +218,7 @@ namespace TaskHub.Business.UseCases.Implementations
             }
         }
 
-        public async Task<CustumHttpResponse> deleteTaskItem(ClaimsPrincipal User, Guid taskItemId)
+        public async Task<CustumHttpResponse<string>> deleteTaskItem(ClaimsPrincipal User, Guid taskItemId)
         {
 
             Guid userId = _tokenService.GetClaimsValue<AuthClaims>(User).UserId;
@@ -229,7 +229,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
             if (taskDataRes.UserId == userId)
             {
-                GenericResponse response = CustomHttpErrorNumber.success;
+                GenericResponse<string> response = CustomHttpErrorNumber<string>.success;
 
                 _taskItemsServices.deleteTaskItem(taskItemId);
 
@@ -238,7 +238,7 @@ namespace TaskHub.Business.UseCases.Implementations
 
                 response.detail = "task Item deleted successfully";
 
-                return new CustumHttpResponse(
+                return new CustumHttpResponse<string>(
                     content: response,
                     statusCode: 200
                 );

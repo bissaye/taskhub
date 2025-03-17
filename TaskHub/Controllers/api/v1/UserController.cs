@@ -26,7 +26,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="userRegisterReq">user data for registration</param>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<CustumHttpResponse> register([FromBody] UserRegisterReq userRegisterReq)
+        public async Task<CustumHttpResponse<string>> register([FromBody] UserRegisterReq userRegisterReq)
         {
             return await _userUseCases.register(userRegisterReq);
         }
@@ -37,7 +37,7 @@ namespace TaskHub.Controllers.api.v1
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(UserDataRes), 200)]
-        public async Task<CustumHttpResponse> get()
+        public async Task<CustumHttpResponse<UserDataRes>> get()
         {
             return await _userUseCases.getData(User);
         }
@@ -50,7 +50,7 @@ namespace TaskHub.Controllers.api.v1
         [HttpPut]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(UserDataRes), 200)]
-        public async Task<CustumHttpResponse> update([FromBody] UserUpdateReq userUpdateReq)
+        public async Task<CustumHttpResponse<UserDataRes>> update([FromBody] UserUpdateReq userUpdateReq)
         {
             return await _userUseCases.updateData(User, userUpdateReq);
         }
@@ -61,7 +61,7 @@ namespace TaskHub.Controllers.api.v1
         /// </summary>
         [HttpDelete]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public CustumHttpResponse delete()
+        public CustumHttpResponse<string> delete()
         {
             return _userUseCases.deleteUser(User);
         }
