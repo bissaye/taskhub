@@ -27,7 +27,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="taskReq">task item's data</param>
         [HttpPost("add")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(TaskDataRes), 200)]
+        [ProducesResponseType(typeof(GenericResponse<TaskDataRes>), 200)]
         public async Task<CustumHttpResponse<TaskDataRes>> addTaskItem([FromBody] TaskReq taskReq)
         {
             return await _taskItemUseCases.createTaskItem(User, taskReq);
@@ -40,7 +40,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="taskItemId">task item Id</param>
         [HttpGet("get/{taskItemId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(TaskDataRes), 200)]
+        [ProducesResponseType(typeof(GenericResponse<TaskDataRes>), 200)]
         public async Task<CustumHttpResponse<TaskDataRes>> getTaskItemData(Guid taskItemId)
         {
             return await _taskItemUseCases.getTaskItemData(User, taskItemId);
@@ -58,7 +58,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="page">the page number that you want</param>
         [HttpGet("get/all")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(List<TaskDataRes>), 200)]
+        [ProducesResponseType(typeof(GenericResponse<List<TaskDataRes>>), 200)]
         public Task<CustumHttpResponse<List<TaskDataRes>>> getAllTaskItemData(string sortBy = "Created_at", DateTime? dueDate = null, TaskStatus? status = null, int? priority = null, int count = 10, int page = 1)
         {
             return _taskItemUseCases.getAllTaskItemData(User, sortBy, dueDate, status, priority, count, page);
@@ -72,7 +72,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="taskReq">task item data</param>
         [HttpPut("update/{taskItemId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(TaskDataRes), 200)]
+        [ProducesResponseType(typeof(GenericResponse<TaskDataRes>), 200)]
         public async Task<CustumHttpResponse<TaskDataRes>> updateTaskItemData(Guid taskItemId, [FromBody] TaskReq taskReq)
         {
             return await _taskItemUseCases.updateTaskItem(User, taskItemId, taskReq);
@@ -86,7 +86,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="taskUpdateStatusReq">new status value</param>
         [HttpPut("update/status/{taskItemId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(TaskDataRes), 200)]
+        [ProducesResponseType(typeof(GenericResponse<TaskDataRes>), 200)]
         public async Task<CustumHttpResponse<TaskDataRes>> updateTaskItemStatus(Guid taskItemId, [FromBody] TaskUpdateStatusReq taskUpdateStatusReq)
         {
             return await _taskItemUseCases.updateTaskItemStatus(User, taskItemId, taskUpdateStatusReq.Status);
@@ -100,7 +100,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="taskUpdatePriorityReq">new priority value</param>
         [HttpPut("update/priority/{taskItemId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(TaskDataRes), 200)]
+        [ProducesResponseType(typeof(GenericResponse<TaskDataRes>), 200)]
         public async Task<CustumHttpResponse<TaskDataRes>> updateTaskItemStatus(Guid taskItemId, [FromBody] TaskUpdatePriorityReq taskUpdatePriorityReq)
         {
             return await _taskItemUseCases.updateTaskItemPriority(User, taskItemId, taskUpdatePriorityReq.priority);
@@ -113,6 +113,7 @@ namespace TaskHub.Controllers.api.v1
         /// <param name="taskItemId">task item Id</param>
         [HttpDelete("delete/{taskItemId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
+        [ProducesResponseType(typeof(GenericResponse<string>), 200)]
         public async Task<CustumHttpResponse<string>> deleteTaskItem(Guid taskItemId)
         {
             return await _taskItemUseCases.deleteTaskItem(User, taskItemId);
